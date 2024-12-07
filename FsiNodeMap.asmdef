@@ -1,0 +1,14 @@
+{
+    "name": "fsi.nodemap",
+    "rootNamespace": "Fsi.NodeMap",
+    "references": ["GUID:b279ef79bd3444b31bb52d6547177e82","GUID:0bf94059b1957468a8aa0333f3f53169","GUID:13a6fdc14ca9df84eb8019bc66fa9e5d"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

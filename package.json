@@ -1,0 +1,23 @@
+{
+  "name": "com.fallingsnowinteractive.nodemap",
+  "version": "0.1.0",
+  "displayName": "FSI Node Map",
+  "description": "Node map for roguelites.",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "keywords": [
+    "Node",
+	"Map",
+	"Roguelite"
+  ],
+  "author": {
+    "name": "Kira Dinan",
+    "email": "kiradinan.dev@gmail.com"
+  },
+  "hideInEditor": false,
+  "dependencies": {
+	  "com.fallingsnowinteractive.gameplay":"0.1.1",
+	  "com.fallingsnowinteractive.spline":"0.0.1",
+	  "com.unity.inputsystem":"1.11.2"
+  }
+}
