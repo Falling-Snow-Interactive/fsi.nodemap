@@ -1,89 +1,106 @@
 using System;
 using System.Collections.Generic;
 using Fsi.NodeMap.Nodes;
-using Fsi.NodeMap.Nodes.Randomzier;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Fsi.NodeMap
 {
+    [Serializable]
     public abstract class Map<TEnum, TNode> 
         where TEnum : Enum
-        where TNode : Node<TEnum>, new()
+        where TNode : Node<TEnum, TNode>, new()
     {
-        public TNode Root { get; private set; }
-        public List<TNode> Nodes { get; private set; }
-        public TNode End { get; private set; }
+        public TNode root;
+        public List<TNode> nodes;
+        public TNode end;
+
+        private MapProperties<TEnum> properties;
 
         protected Map(MapProperties<TEnum> properties)
         {
-            Root = new TNode
+            this.properties = properties;
+            
+            root = new TNode
                    {
-                       position = new Vector2(properties.Dimensions.x / 2f, -2f),
+                       position = new Vector2Int(0, -1),
                        type = properties.RootType
                    };
-            Nodes = new List<TNode>();
-            End = new TNode
+            nodes = new List<TNode>();
+            end = new TNode
                    {
-                       position = new Vector2(properties.Dimensions.x / 2f, properties.Dimensions.y + 1),
+                       position = new Vector2Int(0, properties.Size.y),
                        type = properties.EndType
                    };
             
-            NodeRandomizer<TEnum> nodeRandomizer = new NodeRandomizer<TEnum>();
-            foreach (var entry in properties.Encounters)
+            // TODO - Generate mutiple paths - KD
+            foreach (int start in this.properties.StartPoints)
             {
-                nodeRandomizer.Add(entry);
-            }
-            
-            for(int y = 0; y < properties.Dimensions.y; y++)
-                for (int x = 0; x < properties.Dimensions.x; x++)
+                TNode current = root;
+                int x = start;
+                while (current != end)
                 {
-                    TNode node = new TNode
-                                 {
-                                     position = new Vector2(x, y),
-                                     type = nodeRandomizer.Randomize()
-                                 };
-                    Nodes.Add(node);
-                }
+                    Vector2Int pos = current.position;
+                    pos.x = x;
+                    pos.y += 1;
 
-            foreach(int p in properties.StartPoints)
-            {
-                int xPos = p;
-                int yPos = 0;
-                
-                Vector2Int pos = new Vector2Int(xPos, yPos);
-
-                if (TryGetNode(pos, out TNode currentNode))
-                {
-                    Root.Connect(currentNode);
-
-                    while (yPos < properties.Dimensions.y - 1)
+                    if (!TryGetNode(pos, out TNode next))
                     {
-                        int xStep = Random.Range(-properties.PathStep.x, properties.PathStep.x + 1);
-                        xPos += xStep;
-                        xPos = Mathf.Clamp(xPos, 0, properties.Dimensions.x - 1);
-
-                        yPos += Random.Range(1, properties.PathStep.y + 1);
-                        yPos = Mathf.Clamp(yPos, 0, properties.Dimensions.y - 1);
-
-                        pos = new Vector2Int(xPos, yPos);
-                        if (TryGetNode(pos, out TNode connectionNode))
-                        {
-                            currentNode.Connect(connectionNode);
-
-                            currentNode = connectionNode;
-                        }
+                        next = new TNode
+                               {
+                                   position = pos,
+                                   // TODO - Set node type - KD
+                               };
+                        nodes.Add(next);
                     }
 
-                    currentNode.Connect(End);
+                    current.next.Add(next);
+                    current = next;
+
+                    var dirs = new List<int> { 0 };
+
+                    if (x > 0)
+                    {
+                        dirs.Add(-1);
+                    }
+
+                    if (x < properties.Size.x - 1)
+                    {
+                        dirs.Add(1);
+                    }
+
+                    // TODO - Random needs to be deterministic eventually - KD
+                    int dir = dirs[Random.Range(0, dirs.Count)];
+                    x += dir;
                 }
             }
         }
 
-        private bool TryGetNode(Vector2Int position, out TNode node)
+        public TNode GetRootNode()
         {
-            foreach (var entry in Nodes)
+            return root;
+        }
+
+        public TNode GetEndNode()
+        {
+            return end;
+        }
+
+        public bool TryGetNode(Vector2Int position, out TNode node)
+        {
+            if (position.y < 0)
+            {
+                node = root;
+                return true;
+            }
+            
+            if (position.y >= properties.Size.y)
+            {
+                node = end;
+                return true;
+            }
+            
+            foreach (var entry in nodes)
             {
                 if (entry.position == position)
                 {

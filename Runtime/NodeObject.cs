@@ -6,7 +6,7 @@ namespace Fsi.NodeMap
 {
     public abstract class NodeObject<TEnum, TNode> : MonoBehaviour
         where TEnum : Enum
-        where TNode : Node<TEnum>
+        where TNode : Node<TEnum, TNode>
     {
         public TNode Node { get; private set; }
 

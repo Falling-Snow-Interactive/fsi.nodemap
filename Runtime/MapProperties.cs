@@ -9,24 +9,21 @@ namespace Fsi.NodeMap
         where TEnum : Enum
     {
         [SerializeField]
-        private List<int> startPoints = new List<int>();
-        
+        private List<int> startPoints = new();
         public List<int> StartPoints => startPoints;
         
         [SerializeField]
-        private Vector2Int dimensions;
-        
-        public Vector2Int Dimensions => dimensions;
+        private Vector2Int size;
+        public Vector2Int Size => size;
         
         [SerializeField]
         private Vector2Int pathStep = new Vector2Int(2, 1);
-        
         public Vector2Int PathStep => pathStep;
         
-        [SerializeField]
-        private List<NodeRandomizerEntry<TEnum>> encounters = new();
-        
-        public List<NodeRandomizerEntry<TEnum>> Encounters => encounters;
+        // [SerializeField]
+        // private List<NodeRandomizerEntry<TEnum>> encounters = new();
+        //
+        // public List<NodeRandomizerEntry<TEnum>> Encounters => encounters;
 
         [SerializeField]
         private TEnum rootType;

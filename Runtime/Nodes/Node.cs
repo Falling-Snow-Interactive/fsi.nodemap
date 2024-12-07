@@ -1,36 +1,29 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Fsi.NodeMap.Nodes
 {
     [Serializable]
-    public class Node<TEnum>
+    public class Node<TEnum, TNode>
         where TEnum : Enum
+        where TNode : Node<TEnum, TNode>
     {
-        public Vector2 position;
+        public Vector2Int position;
         public TEnum type;
 
-        public List<Node<TEnum>> next;
-        public List<Node<TEnum>> prev;
+        public List<TNode> next;
 
         public Node()
         {
-            next = new List<Node<TEnum>>();
-            prev = new List<Node<TEnum>>();
+            next = new List<TNode>();
         }
 
-        public void Connect(Node<TEnum> target)
+        public void Connect(TNode target)
         {
             if (!next.Contains(target))
             {
                 next.Add(target);
-            }
-
-            if (!target.prev.Contains(this))
-            {
-                target.prev.Add(target);
             }
         }
     }
