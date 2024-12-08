@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Fsi.NodeMap.Nodes;
+using Fsi.NodeMap.Nodes.Randomzier;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -13,12 +14,15 @@ namespace Fsi.NodeMap
         public TNode Root { get; }
         public List<TNode> Nodes { get; }
         public TNode End { get; }
+        
+        public uint Seed { get; }
 
         private readonly MapProperties<TEnum> properties;
         
         protected Map(MapProperties<TEnum> properties, uint seed)
         {
             Random.InitState((int)seed);
+            Seed = seed;
             
             this.properties = properties;
             
@@ -34,7 +38,12 @@ namespace Fsi.NodeMap
                        type = properties.EndType
                    };
             
-            // TODO - Generate mutiple paths - KD
+            
+            var nodeRandomizer = new NodeRandomizer<TEnum>();
+            foreach (NodeRandomizerEntry<TEnum> nodeEntry in properties.NodeTypes)
+            {
+                nodeRandomizer.Add(nodeEntry);
+            }
             foreach (int start in this.properties.StartPoints)
             {
                 TNode current = Root;
@@ -50,7 +59,7 @@ namespace Fsi.NodeMap
                         next = new TNode
                                {
                                    position = pos,
-                                   // TODO - Set node type - KD
+                                   type = nodeRandomizer.Randomize(),
                                };
                         Nodes.Add(next);
                     }
@@ -75,16 +84,6 @@ namespace Fsi.NodeMap
                     x += dir;
                 }
             }
-        }
-
-        public TNode GetRootNode()
-        {
-            return Root;
-        }
-
-        public TNode GetEndNode()
-        {
-            return End;
         }
 
         public bool TryGetNode(Vector2Int position, out TNode node)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Fsi.NodeMap.Nodes.Randomzier;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Fsi.NodeMap
 {
@@ -19,11 +20,6 @@ namespace Fsi.NodeMap
         [SerializeField]
         private Vector2Int pathStep = new Vector2Int(2, 1);
         public Vector2Int PathStep => pathStep;
-        
-        // [SerializeField]
-        // private List<NodeRandomizerEntry<TEnum>> encounters = new();
-        //
-        // public List<NodeRandomizerEntry<TEnum>> Encounters => encounters;
 
         [SerializeField]
         private TEnum rootType;
@@ -32,5 +28,9 @@ namespace Fsi.NodeMap
         [SerializeField]
         private TEnum endType;
         public TEnum EndType => endType;
+        
+        [SerializeField]
+        private List<NodeRandomizerEntry<TEnum>> nodeTypes = new();
+        public List<NodeRandomizerEntry<TEnum>> NodeTypes => nodeTypes;
     }
 }
