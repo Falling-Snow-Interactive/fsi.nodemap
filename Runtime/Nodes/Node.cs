@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Fsi.NodeMap.Nodes
 {
-    [Serializable]
     public class Node<TEnum, TNode>
         where TEnum : Enum
         where TNode : Node<TEnum, TNode>

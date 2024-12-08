@@ -6,34 +6,29 @@ using Random = UnityEngine.Random;
 
 namespace Fsi.NodeMap
 {
-    [Serializable]
     public abstract class Map<TEnum, TNode> 
         where TEnum : Enum
         where TNode : Node<TEnum, TNode>, new()
     {
-        public TNode root;
-        public List<TNode> nodes;
-        public TNode end;
+        public TNode Root { get; }
+        public List<TNode> Nodes { get; }
+        public TNode End { get; }
 
-        private MapProperties<TEnum> properties;
-
-        [SerializeField]
-        private uint seed;
-
+        private readonly MapProperties<TEnum> properties;
+        
         protected Map(MapProperties<TEnum> properties, uint seed)
         {
             Random.InitState((int)seed);
             
             this.properties = properties;
-            this.seed = seed;
             
-            root = new TNode
+            Root = new TNode
                    {
                        position = new Vector2Int(0, -1),
                        type = properties.RootType
                    };
-            nodes = new List<TNode>();
-            end = new TNode
+            Nodes = new List<TNode>();
+            End = new TNode
                    {
                        position = new Vector2Int(0, properties.Size.y),
                        type = properties.EndType
@@ -42,9 +37,9 @@ namespace Fsi.NodeMap
             // TODO - Generate mutiple paths - KD
             foreach (int start in this.properties.StartPoints)
             {
-                TNode current = root;
+                TNode current = Root;
                 int x = start;
-                while (current != end)
+                while (current != End)
                 {
                     Vector2Int pos = current.position;
                     pos.x = x;
@@ -57,7 +52,7 @@ namespace Fsi.NodeMap
                                    position = pos,
                                    // TODO - Set node type - KD
                                };
-                        nodes.Add(next);
+                        Nodes.Add(next);
                     }
 
                     current.next.Add(next);
@@ -84,29 +79,29 @@ namespace Fsi.NodeMap
 
         public TNode GetRootNode()
         {
-            return root;
+            return Root;
         }
 
         public TNode GetEndNode()
         {
-            return end;
+            return End;
         }
 
         public bool TryGetNode(Vector2Int position, out TNode node)
         {
             if (position.y < 0)
             {
-                node = root;
+                node = Root;
                 return true;
             }
             
             if (position.y >= properties.Size.y)
             {
-                node = end;
+                node = End;
                 return true;
             }
             
-            foreach (var entry in nodes)
+            foreach (var entry in Nodes)
             {
                 if (entry.position == position)
                 {
