@@ -17,9 +17,15 @@ namespace Fsi.NodeMap
 
         private MapProperties<TEnum> properties;
 
-        protected Map(MapProperties<TEnum> properties)
+        [SerializeField]
+        private uint seed;
+
+        protected Map(MapProperties<TEnum> properties, uint seed)
         {
+            Random.InitState((int)seed);
+            
             this.properties = properties;
+            this.seed = seed;
             
             root = new TNode
                    {
