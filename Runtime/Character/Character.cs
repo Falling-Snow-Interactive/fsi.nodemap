@@ -43,11 +43,11 @@ namespace Fsi.NodeMap.Character
                                {
                                    timer += Time.deltaTime;
                                    float t = timer / moveTime;
-                                   visuals.SetMovement(speedCurve.Evaluate(t) * transform.forward);
+                                   visuals.SetMovement(speedCurve.Evaluate(t) * transform.forward, false);
                                })
                      .OnComplete(() =>
                                  {
-                                     visuals.SetMovement(Vector3.zero);
+                                     visuals.SetMovement(Vector3.zero, false);
                                      transform.forward = Vector3.forward;
                                      callback?.Invoke();
                                  });

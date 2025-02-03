@@ -17,14 +17,14 @@ namespace Fsi.NodeMap
         
         public uint Seed { get; }
 
-        private readonly MapProperties<TEnum> properties;
+        private MapProperties<TEnum> Properties { get; }
         
         protected Map(MapProperties<TEnum> properties, uint seed)
         {
             Random.InitState((int)seed);
             Seed = seed;
             
-            this.properties = properties;
+            Properties = properties;
             
             Root = new TNode
                    {
@@ -44,7 +44,7 @@ namespace Fsi.NodeMap
             {
                 nodeRandomizer.Add(nodeEntry);
             }
-            foreach (int start in this.properties.StartPoints)
+            foreach (int start in Properties.StartPoints)
             {
                 TNode current = Root;
                 int x = start;
@@ -64,7 +64,7 @@ namespace Fsi.NodeMap
                         Nodes.Add(next);
                     }
 
-                    current.next.Add(next);
+                    current.AddNext(next);
                     current = next;
 
                     var dirs = new List<int> { 0 };
@@ -94,7 +94,7 @@ namespace Fsi.NodeMap
                 return true;
             }
             
-            if (position.y >= properties.Size.y)
+            if (position.y >= Properties.Size.y)
             {
                 node = End;
                 return true;
@@ -111,6 +111,12 @@ namespace Fsi.NodeMap
             
             node = null;
             return false;
+        }
+
+        public override string ToString()
+        {
+            var s = $"Map: {Seed}";
+            return s;
         }
     }
 }
